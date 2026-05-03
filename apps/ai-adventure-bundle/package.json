@@ -14,13 +14,14 @@
   },
   "dependencies": {
     "@ai-adventure/bundle-schema": "*",
-    "zod": "^3.23.0",
+    "commander": "^12.0.0",
     "fflate": "^0.8.2",
     "pdfjs-dist": "^4.2.0",
     "sharp": "^0.33.0",
-    "commander": "^12.0.0"
+    "zod": "^3.23.0"
   },
   "devDependencies": {
+    "@types/node": "^25.6.0",
     "typescript": "^5.4.0",
     "vitest": "^1.6.0"
   }
