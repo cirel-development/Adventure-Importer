@@ -27,6 +27,7 @@ declare namespace foundry {
     }
   }
   namespace utils {
+    function saveDataToFile(data: string, type: string, filename: string): void;
     function debounce<T extends (...a: unknown[]) => unknown>(fn: T, delay: number): T;
   }
 }

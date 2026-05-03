@@ -40,7 +40,7 @@ export async function exportCompendiumIndex(): Promise<void> {
   };
 
   const json = JSON.stringify(index, null, 2);
-  saveDataToFile(json, "application/json", "compendium-index.json");
+  foundry.utils.saveDataToFile(json, "application/json", "compendium-index.json");
 
   ui.notifications.info(
     game.i18n.format(`${MODULE_ID}.export.done`, {
