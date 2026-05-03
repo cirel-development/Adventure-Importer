@@ -1,0 +1,44 @@
+<div class="aai-build-step">
+
+  {{!-- Progress bar --}}
+  <div class="aai-progress-bar-wrap">
+    <div class="aai-progress-bar" style="width: {{progressPct}}%"></div>
+  </div>
+
+  <div class="aai-progress-info">
+    {{#if (eq progress.phase "idle")}}
+      <span>Starting…</span>
+    {{else if (eq progress.phase "done")}}
+      <i class="fas fa-check-circle aai-success-icon"></i>
+      <span>Import complete.</span>
+    {{else if (eq progress.phase "error")}}
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>Import finished with errors.</span>
+    {{else}}
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>{{progress.currentLabel}}</span>
+      <span class="aai-count">{{progress.done}} / {{progress.total}}</span>
+    {{/if}}
+  </div>
+
+  {{!-- Errors --}}
+  {{#if progress.errors.length}}
+    <div class="aai-errors">
+      <p class="aai-errors-heading"><i class="fas fa-exclamation-circle"></i> Errors (non-blocking):</p>
+      {{#each progress.errors}}
+        <div class="aai-error-item">{{this}}</div>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  <div class="aai-footer">
+    <button class="aai-undo" type="button" {{#unless canUndo}}disabled{{/unless}}>
+      <i class="fas fa-undo"></i> {{i18n.undo}}
+    </button>
+    <button class="aai-close-build" type="button"
+      {{#unless (eq progress.phase "done")}}disabled{{/unless}}>
+      <i class="fas fa-check"></i> {{i18n.close}}
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,19 @@
+{
+  "id": "ai-adventure-importer",
+  "title": "AI Adventure Importer",
+  "description": "Import AI-generated adventure bundles into Foundry VTT. Creates scenes, actors, journals, items, and playlists from a .bundle file.",
+  "version": "0.1.8",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [{ "name": "Zenith Sector" }],
+  "esmodules": ["module.js"],
+  "styles": ["ai-adventure-importer.css"],
+  "languages": [{
+    "lang": "en",
+    "name": "English",
+    "path": "lang/en.json"
+  }],
+  "flags": {}
+}

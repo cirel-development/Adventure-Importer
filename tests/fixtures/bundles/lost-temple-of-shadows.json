@@ -1,0 +1,442 @@
+{
+  "schema": "1.0",
+
+  "meta": {
+    "generatedAt": "2026-05-03T12:00:00.000Z",
+    "generatedBy": "hand-crafted-fixture/1.0.0",
+    "sourcePdf": "lost-temple-of-shadows.pdf",
+    "system": "pf2e"
+  },
+
+  "adventure": {
+    "title": "Lost Temple of Shadows",
+    "slug": "lost-temple-of-shadows",
+    "synopsis": "A crumbling temple to a forgotten shadow god stirs beneath the old harbour district. Cultists have awakened something dormant, and the players must descend into its depths before the ritual is complete.",
+    "tone": "Gothic horror with investigation elements",
+    "partyLevel": { "min": 3, "max": 5 },
+    "partySize": 4
+  },
+
+  "assets": [
+    {
+      "id": "img-a1-map",
+      "type": "battle_map",
+      "filename": "a1-entry-hall.webp",
+      "sourcePage": 12,
+      "caption": "Area A1 — The Entry Hall"
+    },
+    {
+      "id": "img-marrow-portrait",
+      "type": "npc_portrait",
+      "filename": "captain-marrow.webp",
+      "sourcePage": 8,
+      "caption": "Captain Aldric Marrow"
+    },
+    {
+      "id": "img-handout-letter",
+      "type": "handout",
+      "filename": "cult-summons.webp",
+      "sourcePage": 6,
+      "caption": "A wax-sealed letter bearing the shadow cult's mark"
+    }
+  ],
+
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "title": "The Harbour District",
+      "synopsis": "The players arrive at the harbour and begin piecing together the cult's activities.",
+
+      "rooms": [
+        {
+          "id": "a1-entry-hall",
+          "code": "A1",
+          "name": "Entry Hall",
+          "readAloud": "<p>The heavy stone door grinds open to reveal a vaulted chamber thick with stale air. Torchlight flickers from iron sconces, casting long shadows across the carved bas-reliefs that line the walls — figures prostrating before a great, formless dark.</p>",
+          "gmNotes": "<p>The cultists use this room as a checkpoint. Anyone entering without the shadow cult's sigil tattooed on their wrist is attacked on sight. The bas-reliefs provide a DC 18 Religion check to identify the forgotten deity Noctiveth.</p>",
+          "connections": [
+            {
+              "toRoomId": "a2-inner-sanctum",
+              "direction": "north",
+              "description": "a heavy iron door, slightly ajar",
+              "requirement": "DC 18 Athletics to force if locked"
+            }
+          ],
+          "skillChecks": [
+            {
+              "skill": "Perception",
+              "dc": 16,
+              "description": "Notice a loose flagstone near the east wall",
+              "success": "The PC finds a leather satchel containing 12 gp and a vial of antiplague.",
+              "failure": "Nothing unusual is apparent."
+            },
+            {
+              "skill": "Religion",
+              "dc": 18,
+              "description": "Identify the deity depicted in the bas-reliefs",
+              "success": "The carvings depict Noctiveth, a shadow deity formally stricken from the Starstone pantheon three centuries ago.",
+              "failure": "The deity is unfamiliar — ancient and clearly proscribed."
+            }
+          ],
+          "mapAssetId": "img-a1-map",
+          "map": {
+            "gridSizePx": 100,
+            "walls": [
+              { "c": [0.0, 0.0, 1.0, 0.0], "light": 20, "move": 20, "sight": 20, "door": 0, "ds": 0 },
+              { "c": [1.0, 0.0, 1.0, 1.0], "light": 20, "move": 20, "sight": 20, "door": 0, "ds": 0 },
+              { "c": [1.0, 1.0, 0.0, 1.0], "light": 20, "move": 20, "sight": 20, "door": 0, "ds": 0 },
+              { "c": [0.0, 1.0, 0.0, 0.0], "light": 20, "move": 20, "sight": 20, "door": 0, "ds": 0 },
+              { "c": [0.42, 0.0, 0.58, 0.0], "light": 20, "move": 20, "sight": 20, "door": 1, "ds": 0 },
+              { "c": [0.42, 1.0, 0.58, 1.0], "light": 20, "move": 20, "sight": 20, "door": 1, "ds": 1 }
+            ],
+            "lights": [
+              {
+                "x": 0.25, "y": 0.5,
+                "dim": 4, "bright": 2,
+                "color": "#ff9329",
+                "animation": { "type": "torch", "speed": 3, "intensity": 3 }
+              },
+              {
+                "x": 0.75, "y": 0.5,
+                "dim": 4, "bright": 2,
+                "color": "#ff9329",
+                "animation": { "type": "torch", "speed": 2, "intensity": 4 }
+              }
+            ],
+            "sounds": [
+              {
+                "x": 0.5, "y": 0.5,
+                "radius": 10,
+                "path": "",
+                "description": "Distant dripping water and the occasional scrape of stone"
+              }
+            ]
+          },
+          "ambience": {
+            "background": [
+              "Slow dripping water echoing off stone",
+              "Distant chanting, barely audible"
+            ],
+            "combatTrack": "Tense percussive score with low drone",
+            "oneShots": ["Stone door grinding open", "Torch crackling", "Cultist war cry"]
+          }
+        },
+        {
+          "id": "a2-inner-sanctum",
+          "code": "A2",
+          "name": "Inner Sanctum",
+          "readAloud": "<p>A circular chamber opens before you. At its centre, a basin of dark liquid reflects the ceiling — a mosaic of stars with one constellation conspicuously scratched out. The air smells of iron and burned wax.</p>",
+          "gmNotes": "<p>The basin contains shadow-infused blood. Disturbing it triggers the Desecrated Basin hazard. The High Priestess Vexa is here unless already encountered elsewhere.</p>",
+          "connections": [
+            {
+              "toRoomId": "a1-entry-hall",
+              "direction": "south",
+              "description": "the iron door back to the entry hall"
+            }
+          ],
+          "skillChecks": [
+            {
+              "skill": "Arcana",
+              "dc": 20,
+              "description": "Analyse the ritual basin",
+              "success": "The ritual is half-complete. Disrupting the basin now will delay it by 24 hours and deal 4d6 negative damage to anyone within 10 feet.",
+              "failure": "The magic is too complex to read quickly."
+            }
+          ],
+          "ambience": {
+            "background": [
+              "A low, resonant hum from the basin",
+              "Soft whispers at the edge of perception"
+            ]
+          }
+        }
+      ],
+
+      "npcs": [
+        {
+          "id": "goblin-cultist",
+          "name": "Goblin Cultist",
+          "isUnique": false,
+          "compendiumSlug": "goblin-warrior",
+          "compendiumName": "Goblin Warrior"
+        },
+        {
+          "id": "captain-marrow",
+          "name": "Captain Aldric Marrow",
+          "isUnique": true,
+          "portraitAssetId": "img-marrow-portrait",
+          "personality": "Coldly professional. Speaks in clipped sentences. Deeply loyal to Vexa despite knowing the ritual is wrong.",
+          "publicKnowledge": "<p>A former city guard captain, dismissed two years ago for 'conduct unbecoming.' Now runs the cult's muscle. Recognised by his distinctive scar running from left ear to jaw.</p>",
+          "secrets": "<p>Marrow was blackmailed into joining — Vexa holds evidence of a killing he committed while on the guard. He would betray the cult if given a way out and immunity.</p>",
+          "tactics": "<p>Marrow leads from the front but retreats when below 20 HP to warn Vexa. He will not fight to the death — offer of parley at 50% HP buys a one-round pause.</p>",
+          "voiceNotes": "Flat, quiet baritone. Barely moves his face. Pauses before answering anything.",
+          "statBlock": {
+            "level": 4,
+            "traits": ["human", "humanoid"],
+            "size": "med",
+            "rarity": "unique",
+            "hp": 64,
+            "immunities": [],
+            "weaknesses": [],
+            "resistances": [],
+            "ac": 21,
+            "saves": { "fort": 11, "ref": 9, "will": 7 },
+            "abilities": { "str": 4, "dex": 2, "con": 3, "int": 1, "wis": 0, "cha": -1 },
+            "perception": 9,
+            "senses": [],
+            "languages": ["Common"],
+            "skills": { "athletics": 12, "intimidation": 8, "stealth": 8 },
+            "speeds": { "land": 25 },
+            "strikes": [
+              {
+                "name": "Longsword",
+                "type": "melee",
+                "attack": 12,
+                "damage": "1d8+6 slashing",
+                "traits": ["versatile P"]
+              },
+              {
+                "name": "Dagger",
+                "type": "ranged",
+                "attack": 10,
+                "damage": "1d4+4 piercing",
+                "traits": ["agile", "thrown 10 ft."],
+                "range": 2
+              }
+            ],
+            "actions": [
+              {
+                "name": "Power Attack",
+                "cost": 2,
+                "traits": ["flourish"],
+                "description": "<p>Marrow makes a Strike. This counts as two attacks for the multiple attack penalty. If this Strike hits, deal an extra die of weapon damage.</p>",
+                "compendiumSlug": "power-attack"
+              },
+              {
+                "name": "Veteran's Eye",
+                "cost": "reaction",
+                "traits": [],
+                "trigger": "An enemy within 30 feet makes an attack roll against one of Marrow's allies.",
+                "description": "<p>Marrow calls out a warning. The ally gains a +1 circumstance bonus to AC against the triggering attack.</p>",
+                "frequency": { "count": 1, "per": "round" }
+              }
+            ],
+            "spellcasting": [],
+            "confidenceScore": 0.88
+          }
+        },
+        {
+          "id": "high-priestess-vexa",
+          "name": "High Priestess Vexa",
+          "isUnique": true,
+          "personality": "Grandiose and utterly certain of her divine mandate. Treats interruptions as confirmation the uninitiated cannot comprehend.",
+          "publicKnowledge": "<p>Known only as a rumour among harbour dockworkers — 'the woman in grey who pays for silence.'</p>",
+          "secrets": "<p>Vexa is not a true believer. She discovered the ritual three years ago and has been engineering its completion to gain the power Noctiveth promises. She will attempt to bargain if reduced below 30 HP.</p>",
+          "tactics": "<p>Opens with Fear on the most martial-looking PC. Focuses Harm on whoever is disrupting the ritual. Uses Sanctuary on herself the moment she drops below half HP.</p>",
+          "voiceNotes": "Rich, theatrical contralto. Addresses everyone as 'child.' Laughs at threats.",
+          "statBlock": {
+            "level": 6,
+            "traits": ["human", "humanoid"],
+            "size": "med",
+            "rarity": "unique",
+            "hp": 80,
+            "immunities": [],
+            "weaknesses": [{ "type": "positive", "value": 5 }],
+            "resistances": [{ "type": "negative", "value": 3 }],
+            "ac": 22,
+            "saves": { "fort": 10, "ref": 10, "will": 16 },
+            "abilities": { "str": 0, "dex": 2, "con": 2, "int": 2, "wis": 4, "cha": 3 },
+            "perception": 14,
+            "senses": ["darkvision"],
+            "languages": ["Common", "Necril", "Shadowtongue"],
+            "skills": { "arcana": 14, "deception": 13, "religion": 16, "stealth": 10 },
+            "speeds": { "land": 25 },
+            "strikes": [
+              {
+                "name": "Shadow Staff",
+                "type": "melee",
+                "attack": 10,
+                "damage": "1d8+3 bludgeoning plus 1d6 negative",
+                "traits": ["two-hand d10"]
+              }
+            ],
+            "actions": [
+              {
+                "name": "Shade Step",
+                "cost": 1,
+                "traits": ["conjuration", "divine", "shadow", "teleportation"],
+                "description": "<p>Vexa steps into shadow and reappears in an unoccupied space within 30 feet that is in dim light or darkness.</p>",
+                "frequency": { "count": 1, "per": "round" }
+              }
+            ],
+            "spellcasting": [
+              {
+                "type": "prepared",
+                "tradition": "divine",
+                "dc": 24,
+                "attack": 16,
+                "spells": [
+                  {
+                    "name": "Harm",
+                    "level": 4,
+                    "compendiumSlug": "harm"
+                  },
+                  {
+                    "name": "Harm",
+                    "level": 3,
+                    "compendiumSlug": "harm"
+                  },
+                  {
+                    "name": "Fear",
+                    "level": 3,
+                    "compendiumSlug": "fear"
+                  },
+                  {
+                    "name": "Sanctuary",
+                    "level": 1,
+                    "compendiumSlug": "sanctuary"
+                  },
+                  {
+                    "name": "Shadow Siphon",
+                    "level": 3
+                  },
+                  {
+                    "name": "Detect Magic",
+                    "level": 0,
+                    "compendiumSlug": "detect-magic"
+                  },
+                  {
+                    "name": "Guidance",
+                    "level": 0,
+                    "compendiumSlug": "guidance"
+                  }
+                ]
+              },
+              {
+                "type": "innate",
+                "tradition": "divine",
+                "dc": 24,
+                "spells": [
+                  {
+                    "name": "Darkness",
+                    "level": 2,
+                    "compendiumSlug": "darkness",
+                    "frequency": { "type": "per-day", "count": 3 }
+                  },
+                  {
+                    "name": "See the Unseen",
+                    "level": 2,
+                    "frequency": { "type": "at-will" }
+                  }
+                ]
+              }
+            ],
+            "confidenceScore": 0.74
+          }
+        }
+      ],
+
+      "encounters": [
+        {
+          "id": "encounter-a1-cultists",
+          "roomId": "a1-entry-hall",
+          "name": "Cult Checkpoint",
+          "creatures": [
+            { "npcId": "goblin-cultist", "quantity": 4 },
+            { "npcId": "captain-marrow", "quantity": 1 }
+          ],
+          "difficulty": "moderate",
+          "tactics": "Goblins rush the nearest PC. Marrow hangs back and uses Veteran's Eye before wading in with Power Attack on round 2.",
+          "xpBudget": 80
+        }
+      ],
+
+      "items": [
+        {
+          "id": "item-healing-potion",
+          "name": "Lesser Healing Potion",
+          "quantity": 3,
+          "compendiumSlug": "healing-potion-lesser",
+          "location": "treasure",
+          "locationId": "a1-entry-hall"
+        },
+        {
+          "id": "item-shadow-dagger",
+          "name": "Shadow-Etched Dagger",
+          "quantity": 1,
+          "custom": {
+            "type": "weapon",
+            "level": 4,
+            "rarity": "uncommon",
+            "traits": ["agile", "finesse", "shadow", "thrown 10 ft."],
+            "bulk": 0,
+            "price": { "gp": 90 },
+            "description": "<p>A slender dagger whose blade seems to drink in light. Strikes made in dim light or darkness deal an additional 1d4 negative damage.</p><p>When the wielder is in darkness, the dagger can be drawn as a free action once per round.</p>",
+            "confidenceScore": 0.81
+          },
+          "location": "npc-inventory",
+          "locationId": "captain-marrow"
+        },
+        {
+          "id": "item-bronze-key",
+          "name": "Bronze Key",
+          "quantity": 1,
+          "custom": {
+            "type": "equipment",
+            "level": 0,
+            "rarity": "common",
+            "traits": [],
+            "bulk": 0,
+            "price": { "gp": 0 },
+            "description": "<p>A heavy bronze key stamped with the shadow cult's mark. Opens the locked iron door to Area A2.</p>",
+            "confidenceScore": 0.95
+          },
+          "location": "quest-object",
+          "locationId": "a1-entry-hall"
+        }
+      ],
+
+      "hazards": [
+        {
+          "id": "hazard-desecrated-basin",
+          "name": "Desecrated Ritual Basin",
+          "roomId": "a2-inner-sanctum",
+          "destination": "both",
+          "level": 4,
+          "traits": ["magical", "negative", "trap"],
+          "stealth": { "dc": 22, "minProf": "expert" },
+          "disable": {
+            "dc": 24,
+            "skill": "Religion",
+            "description": "Speak the proscription rite of Noctiveth (requires the text from Handout H1) to seal the basin. On a critical failure the basin erupts immediately."
+          },
+          "actions": [
+            {
+              "name": "Shadow Eruption",
+              "cost": "reaction",
+              "traits": ["negative"],
+              "trigger": "A creature touches the basin or disrupts the liquid within.",
+              "description": "<p>The basin erupts with negative energy. All creatures within 10 feet take 4d6 negative damage (DC 22 basic Reflex save).</p>"
+            }
+          ],
+          "hp": 40,
+          "ac": 18,
+          "saves": { "fort": 11, "ref": 5 },
+          "description": "<p>A circular stone basin filled with shadow-infused blood. It radiates moderate necromantic magic and is warm to the touch.</p>",
+          "gmNotes": "<p>The basin is central to Vexa's ritual. Destroying it (reducing HP to 0) ends the ritual permanently but triggers Shadow Eruption as an immediate reaction. The PCs can disable it safely with the Religion check above, but only if they have the proscription text from Handout H1.</p>"
+        }
+      ],
+
+      "handouts": [
+        {
+          "id": "handout-cult-summons",
+          "name": "H1 — Proscription Rite of Noctiveth",
+          "type": "both",
+          "assetId": "img-handout-letter",
+          "content": "<p><em>In Necril, in an archaic dialect:</em></p><p>\"I name thee cast out. I name thee forgotten. By the light of every living star, I seal thee in the dark between worlds. Speak not. Walk not. Be not. Noctiveth, thou art ended.\"</p>",
+          "foundLocation": "A1. Entry Hall — inside the leather satchel beneath the loose flagstone (Perception DC 16 to find)"
+        }
+      ]
+    }
+  ]
+}
