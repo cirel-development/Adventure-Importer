@@ -4,55 +4,43 @@ on:
   push:
     branches: [main]
     paths:
-      # Only run when these files change
       - 'apps/ai-adventure-importer/src/**'
       - 'apps/ai-adventure-importer/templates/**'
       - 'apps/ai-adventure-importer/lang/**'
       - 'apps/ai-adventure-importer/styles/**'
       - 'apps/ai-adventure-importer/module.json'
       - 'packages/bundle-schema/src/**'
-  workflow_dispatch:  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # ── 1. Checkout ──────────────────────────────────────────────────────────
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── 2. Node.js ───────────────────────────────────────────────────────────
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '22'   # Use 22 — 20 is being deprecated on runners
 
-      # ── 3. Install ───────────────────────────────────────────────────────────
       - name: Install dependencies
-        run: npm install
+        run: npm install       # No cache — we have no lock file committed
 
-      # ── 4. Build schema package (required before importer build) ─────────────
       - name: Build bundle-schema
         run: npx tsc --project packages/bundle-schema/tsconfig.json
 
-      # ── 5. Build Foundry module ───────────────────────────────────────────────
       - name: Build importer module
         run: |
           cd apps/ai-adventure-importer
           npm run build
 
-      # ── 6. Show what we're deploying ─────────────────────────────────────────
       - name: Verify build output
         run: |
-          echo "Files to deploy:"
-          ls -lh apps/ai-adventure-importer/module.js
-          ls -lh apps/ai-adventure-importer/ai-adventure-importer.css
+          echo "module.js size: $(wc -c < apps/ai-adventure-importer/module.js) bytes"
           echo "getDocumentClass count: $(grep -c getDocumentClass apps/ai-adventure-importer/module.js)"
-          echo "FilePicker refs: $(grep -c FilePicker apps/ai-adventure-importer/module.js)"
 
-      # ── 7. Install SSH key ────────────────────────────────────────────────────
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
@@ -60,51 +48,43 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      # ── 8. Deploy built files to server ──────────────────────────────────────
       - name: Deploy to server
         run: |
           MODULE_PATH="${{ secrets.SSH_MODULE_PATH }}"
+          USER="${{ secrets.SSH_USER }}"
+          HOST="${{ secrets.SSH_HOST }}"
 
-          # Copy the built JS and CSS (most common changes)
           scp -i ~/.ssh/deploy_key \
             apps/ai-adventure-importer/module.js \
             apps/ai-adventure-importer/module.js.map \
             apps/ai-adventure-importer/ai-adventure-importer.css \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${MODULE_PATH}/
-
-          # Copy module.json (version bumps)
-          scp -i ~/.ssh/deploy_key \
             apps/ai-adventure-importer/module.json \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${MODULE_PATH}/
+            ${USER}@${HOST}:${MODULE_PATH}/
 
-          # Copy lang files
           scp -i ~/.ssh/deploy_key \
             apps/ai-adventure-importer/lang/en.json \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${MODULE_PATH}/lang/
+            ${USER}@${HOST}:${MODULE_PATH}/lang/
 
-          # Copy templates
           scp -i ~/.ssh/deploy_key \
             apps/ai-adventure-importer/templates/importer-app.hbs \
             apps/ai-adventure-importer/templates/review-step.hbs \
             apps/ai-adventure-importer/templates/build-step.hbs \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${MODULE_PATH}/templates/
+            ${USER}@${HOST}:${MODULE_PATH}/templates/
 
-      # ── 9. Restart Foundry ────────────────────────────────────────────────────
       - name: Restart Foundry
         run: |
           ssh -i ~/.ssh/deploy_key \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            'pm2 restart foundry && echo "Foundry restarted successfully"'
+            'pm2 restart foundry && echo "✓ Foundry restarted"'
 
-      # ── 10. Verify deployment ─────────────────────────────────────────────────
-      - name: Verify deployed file
+      - name: Verify deployment
         run: |
-          RESULT=$(ssh -i ~/.ssh/deploy_key \
+          COUNT=$(ssh -i ~/.ssh/deploy_key \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             "grep -c getDocumentClass ${{ secrets.SSH_MODULE_PATH }}/module.js")
-          echo "getDocumentClass occurrences on server: ${RESULT}"
-          if [ "$RESULT" -lt "5" ]; then
-            echo "ERROR: Deployed file looks wrong (expected ≥10 occurrences)"
+          echo "getDocumentClass on server: ${COUNT}"
+          if [ "$COUNT" -lt "5" ]; then
+            echo "ERROR: wrong file deployed"
             exit 1
           fi
           echo "✓ Deployment verified"
