@@ -112,39 +112,52 @@ export class ActorBuilder {
     const actor = await (getDocumentClass("Actor") as any).create(actorData) as unknown as Actor;
 
     // Create embedded spellcasting entries + spells
-    for (const casting of npc.statBlock.spellcasting) {
-      const entryData = buildSpellcastingEntry(casting);
-      const [entry] = await actor.createEmbeddedDocuments("Item", [entryData]);
-      const entryId = (entry as unknown as { id: string }).id;
+    // Wrapped in try/catch — PF2e's NPCPF2e.createEmbeddedDocuments override
+    // can reject spellcastingEntry items depending on the system version.
+    // If it fails, we note all spells in GM notes for manual entry.
+    const allSpellNames = npc.statBlock.spellcasting
+      .flatMap(c => c.spells.map(s => `${s.name} (lvl ${s.level})`));
 
-      // Gather spells for this casting block
-      const castingSpells = spells.filter(s => s.castingType === casting.type);
-      const spellDocs: unknown[] = [];
+    try {
+      for (const casting of npc.statBlock.spellcasting) {
+        const entryData = buildSpellcastingEntry(casting);
+        const [entry] = await actor.createEmbeddedDocuments("Item", [entryData]);
+        const entryId = (entry as unknown as { id: string }).id;
 
-      for (const spell of castingSpells) {
-        if (spell.compendiumId && spell.packId) {
-          const pack = game.packs.get(spell.packId);
-          const doc = await pack?.getDocument(spell.compendiumId);
-          if (doc) {
-            const sd = (doc as unknown as { toObject(): Record<string, unknown> }).toObject();
-            sd.system = { ...(sd.system as object), location: { value: entryId } };
+        // Gather spells for this casting block
+        const castingSpells = spells.filter(s => s.castingType === casting.type);
+        const spellDocs: unknown[] = [];
+
+        for (const spell of castingSpells) {
+          if (spell.compendiumId && spell.packId) {
+            const pack = game.packs.get(spell.packId);
+            const doc = await pack?.getDocument(spell.compendiumId);
+            if (doc) {
+              const sd = (doc as unknown as { toObject(): Record<string, unknown> }).toObject();
+              sd.system = { ...(sd.system as object), location: { value: entryId } };
+              spellDocs.push(sd);
+              continue;
+            }
+          }
+          // Stub
+          if (spell.stub) {
+            const sd = { ...spell.stub, system: {
+              ...(spell.stub.system as object),
+              location: { value: entryId },
+            }};
             spellDocs.push(sd);
-            continue;
           }
         }
-        // Stub
-        if (spell.stub) {
-          const sd = { ...spell.stub, system: {
-            ...(spell.stub.system as object),
-            location: { value: entryId },
-          }};
-          spellDocs.push(sd);
+
+        if (spellDocs.length > 0) {
+          await actor.createEmbeddedDocuments("Item", spellDocs);
         }
       }
-
-      if (spellDocs.length > 0) {
-        await actor.createEmbeddedDocuments("Item", spellDocs);
-      }
+    } catch (err) {
+      // Spellcasting entry creation failed (PF2e version compatibility issue)
+      // Surface all spells in GM notes so they can be added manually
+      console.warn(`[ai-adventure-importer] Spellcasting entry failed for "${npc.name}", adding to notes:`, err);
+      unresolvedSpells.push(...allSpellNames);
     }
 
     // Create embedded action items
