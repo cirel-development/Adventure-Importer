@@ -1,26 +1,26 @@
 {
-  "name": "ai-adventure-bundle",
+  "name": "ai-adventure-mcp",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "ai-adventure-bundle": "./dist/cli.js"
+    "ai-adventure-mcp": "./dist/server.js"
   },
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test": "vitest run",
-    "test:golden": "vitest run --config vitest.golden.config.ts"
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@ai-adventure/bundle-schema": "*",
-    "@ai-adventure/bundle-core": "*",
-    "commander": "^12.0.0",
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "fflate": "^0.8.2",
+    "pdfjs-dist": "^4.2.0",
+    "sharp": "^0.33.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
-    "typescript": "^5.4.0",
-    "vitest": "^1.6.0"
+    "typescript": "^5.4.0"
   }
 }

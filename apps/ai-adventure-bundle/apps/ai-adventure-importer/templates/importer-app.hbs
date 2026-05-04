@@ -1,0 +1,50 @@
+<div class="aai-importer-app">
+
+  {{!-- Drop zone --}}
+  <div class="aai-drop-zone {{#if loading}}aai-loading{{/if}} {{#if hasBundle}}aai-has-bundle{{/if}}">
+    <input type="file" class="aai-file-input" accept=".bundle,.json" hidden>
+
+    {{#if loading}}
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>{{i18n.loading}}</p>
+
+    {{else if hasBundle}}
+      <i class="fas fa-check-circle aai-success-icon"></i>
+      <p class="aai-bundle-title">{{bundleTitle}}</p>
+      <p class="aai-hint">{{i18n.dropPrompt}}</p>
+
+    {{else}}
+      <i class="fas fa-file-import"></i>
+      <p>{{i18n.dropPrompt}}</p>
+      <p class="aai-hint">{{i18n.orClick}}</p>
+    {{/if}}
+  </div>
+
+  {{!-- Validation error --}}
+  {{#if error}}
+    <div class="aai-error">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>{{error}}</span>
+    </div>
+  {{/if}}
+
+  {{!-- Warnings --}}
+  {{#if warnings.length}}
+    <div class="aai-warnings">
+      {{#each warnings}}
+        <div class="aai-warning"><i class="fas fa-exclamation-circle"></i> {{this}}</div>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  {{!-- Footer buttons --}}
+  <div class="aai-footer">
+    <button class="aai-export-index" type="button">
+      <i class="fas fa-database"></i> {{i18n.exportIndex}}
+    </button>
+    <button class="aai-proceed" type="button" {{#unless hasBundle}}disabled{{/unless}}>
+      <i class="fas fa-arrow-right"></i> {{i18n.proceed}}
+    </button>
+  </div>
+
+</div>

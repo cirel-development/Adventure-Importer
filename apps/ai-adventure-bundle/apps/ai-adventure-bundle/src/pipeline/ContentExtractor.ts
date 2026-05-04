@@ -13,7 +13,7 @@
  * Output is a per-chapter content map, ready for map analysis (next stage).
  */
 
-import type { ExtractionResult } from "@ai-adventure/bundle-core";
+import type { ExtractionResult } from "../pdf/Extractor.js";
 import type { AdventureOutline } from "./OutlineAnalyzer.js";
 import { createAiClient } from "../ai/Client.js";
 

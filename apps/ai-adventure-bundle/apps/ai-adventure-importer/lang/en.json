@@ -1,0 +1,50 @@
+{
+  "ai-adventure-importer": {
+    "controls": {
+      "openImporter": "Open Adventure Importer"
+    },
+    "app": {
+      "title": "AI Adventure Importer v0.1.8",
+      "dropPrompt": "Drop a .bundle file here",
+      "orClick": "or click to browse",
+      "loading": "Reading bundle…",
+      "exportIndex": "Export Compendium Index",
+      "proceed": "Review Import",
+      "error": {
+        "invalidFile": "Please drop a .bundle or .json file."
+      }
+    },
+    "review": {
+      "title": "Review Import",
+      "proceed": "Build in Foundry",
+      "cancel": "Cancel"
+    },
+    "build": {
+      "title": "Building Adventure",
+      "undo": "Undo Import",
+      "close": "Done",
+      "undoNotYetImplemented": "Undo will be available once builders are complete."
+    },
+    "export": {
+      "scanning": "Scanning installed compendiums…",
+      "done": "Exported {packs} packs ({slugs} slugs) to compendium-index.json"
+    },
+    "settings": {
+      "folderName": {
+        "name": "Top-level Folder Name",
+        "hint": "All imported content will be placed under this folder."
+      },
+      "playlistMode": {
+        "name": "Playlist Scaffolding",
+        "hint": "Controls whether empty playlists are created during import.",
+        "full": "Full (ambience + combat per chapter)",
+        "minimal": "Minimal (one playlist per chapter)",
+        "none": "None (no playlists)"
+      },
+      "uploadsPath": {
+        "name": "Asset Upload Path",
+        "hint": "Foundry data path where bundle assets are stored. Default: ai-imports"
+      }
+    }
+  }
+}

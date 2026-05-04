@@ -21,7 +21,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, basename, extname } from "node:path";
 import { Command } from "commander";
 
-import { extractPdfText } from "@ai-adventure/bundle-core";
+import { extractPdfText } from "./pdf/Extractor.js";
 import { analyzeOutline } from "./pipeline/OutlineAnalyzer.js";
 import { extractContent } from "./pipeline/ContentExtractor.js";
 import { analyzeMaps } from "./pipeline/MapAnalyzer.js";

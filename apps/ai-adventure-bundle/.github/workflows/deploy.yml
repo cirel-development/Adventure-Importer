@@ -1,0 +1,105 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/ai-adventure-importer/src/**'
+      - 'apps/ai-adventure-importer/templates/**'
+      - 'apps/ai-adventure-importer/lang/**'
+      - 'apps/ai-adventure-importer/styles/**'
+      - 'apps/ai-adventure-importer/module.json'
+      - 'packages/bundle-schema/src/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build bundle-schema
+        run: npx tsc --project packages/bundle-schema/tsconfig.json
+
+      - name: Build importer module
+        run: |
+          cd apps/ai-adventure-importer
+          npm run build
+
+      - name: Verify build output
+        run: |
+          echo "module.js size: $(wc -c < apps/ai-adventure-importer/module.js) bytes"
+          echo "getDocumentClass count: $(grep -c getDocumentClass apps/ai-adventure-importer/module.js)"
+
+      # Uses appleboy/ssh-action which handles key parsing correctly
+      - name: Deploy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: |
+            apps/ai-adventure-importer/module.js,
+            apps/ai-adventure-importer/module.js.map,
+            apps/ai-adventure-importer/ai-adventure-importer.css,
+            apps/ai-adventure-importer/module.json
+          target: ${{ secrets.SSH_MODULE_PATH }}
+          strip_components: 2
+
+      - name: Deploy lang file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: apps/ai-adventure-importer/lang/en.json
+          target: ${{ secrets.SSH_MODULE_PATH }}/lang/
+          strip_components: 3
+
+      - name: Deploy templates
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: |
+            apps/ai-adventure-importer/templates/importer-app.hbs,
+            apps/ai-adventure-importer/templates/review-step.hbs,
+            apps/ai-adventure-importer/templates/build-step.hbs
+          target: ${{ secrets.SSH_MODULE_PATH }}/templates/
+          strip_components: 3
+
+      - name: Restart Foundry
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            pm2 restart foundry
+            echo "✓ Foundry restarted"
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            COUNT=$(grep -c getDocumentClass ${{ secrets.SSH_MODULE_PATH }}/module.js)
+            echo "getDocumentClass on server: ${COUNT}"
+            if [ "$COUNT" -lt "5" ]; then
+              echo "ERROR: wrong file deployed"
+              exit 1
+            fi
+            echo "✓ Deployment verified"

@@ -1,0 +1,64 @@
+<div class="aai-review-step">
+
+  <div class="aai-adventure-header">
+    <h2>{{title}}</h2>
+    <p class="aai-synopsis">{{synopsis}}</p>
+    <span class="aai-badge aai-badge--system">{{system}}</span>
+  </div>
+
+  {{!-- Warnings --}}
+  {{#if warnings.length}}
+    <div class="aai-warnings">
+      {{#each warnings}}
+        <div class="aai-warning"><i class="fas fa-exclamation-circle"></i> {{this}}</div>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  {{!-- Summary counts --}}
+  <div class="aai-summary-grid">
+    <div class="aai-summary-item">
+      <span class="aai-summary-count">{{summary.chapters}}</span>
+      <span class="aai-summary-label">Chapters</span>
+    </div>
+    <div class="aai-summary-item">
+      <span class="aai-summary-count">{{summary.scenes}}</span>
+      <span class="aai-summary-label">Scenes</span>
+    </div>
+    <div class="aai-summary-item">
+      <span class="aai-summary-count">{{summary.actors}}</span>
+      <span class="aai-summary-label">Actors</span>
+    </div>
+    <div class="aai-summary-item">
+      <span class="aai-summary-count">{{summary.journals}}</span>
+      <span class="aai-summary-label">Journals</span>
+    </div>
+    <div class="aai-summary-item">
+      <span class="aai-summary-count">{{summary.items}}</span>
+      <span class="aai-summary-label">Items</span>
+    </div>
+    <div class="aai-summary-item">
+      <span class="aai-summary-count">{{summary.handouts}}</span>
+      <span class="aai-summary-label">Handouts</span>
+    </div>
+  </div>
+
+  {{!-- Low confidence warning --}}
+  {{#if summary.lowConfidence}}
+    <div class="aai-warning aai-warning--review">
+      <i class="fas fa-user-edit"></i>
+      {{summary.lowConfidence}} actor(s) have low parse confidence and will be placed
+      in a <em>_Review Needed</em> folder for manual correction.
+    </div>
+  {{/if}}
+
+  <div class="aai-footer">
+    <button class="aai-cancel" type="button">
+      <i class="fas fa-times"></i> {{i18n.cancel}}
+    </button>
+    <button class="aai-build" type="button">
+      <i class="fas fa-hammer"></i> {{i18n.proceed}}
+    </button>
+  </div>
+
+</div>

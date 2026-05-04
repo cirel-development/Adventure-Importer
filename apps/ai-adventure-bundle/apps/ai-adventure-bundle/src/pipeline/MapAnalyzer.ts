@@ -14,7 +14,7 @@
  * (a simple rectangle outline) so the importer can prove walls land correctly.
  */
 
-import type { ExtractionResult, ExtractedImage } from "@ai-adventure/bundle-core";
+import type { ExtractionResult, ExtractedImage } from "../pdf/Extractor.js";
 import type { ExtractedAdventure } from "./ContentExtractor.js";
 import { createAiClient } from "../ai/Client.js";
 

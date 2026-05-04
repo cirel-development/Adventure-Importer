@@ -10,7 +10,7 @@
  * scope their work (e.g. "extract rooms from chapter 2, pages 12-18").
  */
 
-import type { ExtractionResult } from "@ai-adventure/bundle-core";
+import type { ExtractionResult } from "../pdf/Extractor.js";
 import { createAiClient } from "../ai/Client.js";
 
 export interface OutlineChapter {
